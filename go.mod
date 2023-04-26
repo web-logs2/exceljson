@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/pkg/errors v0.9.1
-	github.com/suifengpiao14/logchan/v2 v2.0.9
+	github.com/suifengpiao14/logchan/v2 v2.0.10
 	github.com/xuri/excelize/v2 v2.7.1
 )
 

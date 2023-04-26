@@ -268,8 +268,14 @@ type DataWrap struct {
 	RowNumber int
 }
 
+type LogInfoName string
+
+func (l LogInfoName) String() string {
+	return string(l)
+}
+
 const (
-	LOG_INFO_READ_CHAN_DATA = "export_read_chan_data"
+	LOG_INFO_READ_CHAN_DATA LogInfoName = "excel_export_read_chan_data"
 )
 
 type LogInfoReadChanData struct {
@@ -277,7 +283,7 @@ type LogInfoReadChanData struct {
 	err error
 }
 
-func (l *LogInfoReadChanData) GetName() (name string) {
+func (l *LogInfoReadChanData) GetName() (name logchan.LogName) {
 	name = LOG_INFO_READ_CHAN_DATA
 	return name
 }
