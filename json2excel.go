@@ -1,4 +1,4 @@
-package excelimportexport
+package exceljson
 
 import (
 	"bytes"
@@ -47,10 +47,15 @@ var TplFuncMap = template.FuncMap{
 	},
 }
 
-type Export struct{}
+type _json2excel struct{}
+
+// NewJson2excel 实例化 excel服务
+func NewJson2excel() *_json2excel {
+	return &_json2excel{}
+}
 
 //GetRowNumber  获取下一次可以写入的行号
-func (export *Export) GetRowNumber(fd *excelize.File, sheet string) (rowNumber int, err error) {
+func (export *_json2excel) GetRowNumber(fd *excelize.File, sheet string) (rowNumber int, err error) {
 	rows, err := fd.Rows(sheet)
 	if err != nil {
 		return
@@ -64,12 +69,12 @@ func (export *Export) GetRowNumber(fd *excelize.File, sheet string) (rowNumber i
 }
 
 // 移除一行
-func (export *Export) RemoveRow(fd *excelize.File, sheet string, row int) (err error) {
+func (export *_json2excel) RemoveRow(fd *excelize.File, sheet string, row int) (err error) {
 	err = fd.RemoveRow(sheet, row)
 	return
 }
 
-func (export *Export) GetFieldMap(fd *excelize.File, sheet string) (fieldMap map[int]*FieldMap, err error) {
+func (export *_json2excel) GetFieldMap(fd *excelize.File, sheet string) (fieldMap map[int]*FieldMap, err error) {
 	fieldMap = make(map[int]*FieldMap)
 	rows, err := fd.GetRows(sheet)
 	if err != nil {
@@ -110,7 +115,7 @@ func (export *Export) GetFieldMap(fd *excelize.File, sheet string) (fieldMap map
 }
 
 //WriteDataToFile  写入数据
-func (export *Export) WriteDataToFile(fd *excelize.File, sheet string, rowNumber int, fieldMap map[int]*FieldMap, data []map[string]interface{}) (nextRowNumber int, err error) {
+func (export *_json2excel) WriteDataToFile(fd *excelize.File, sheet string, rowNumber int, fieldMap map[int]*FieldMap, data []map[string]interface{}) (nextRowNumber int, err error) {
 	streamWriter, err := export.GetStreamWriter(fd, sheet)
 	if err != nil {
 		return
@@ -163,7 +168,7 @@ func (export *Export) WriteDataToFile(fd *excelize.File, sheet string, rowNumber
 	return
 }
 
-func (export *Export) GetValue(field *FieldMap, data map[string]interface{}) (value interface{}, err error) {
+func (export *_json2excel) GetValue(field *FieldMap, data map[string]interface{}) (value interface{}, err error) {
 	if field.Type == FIELDMAP_TYPE_STRING {
 		fieldKey, ok := field.Value.(string)
 		if !ok {
@@ -194,7 +199,7 @@ func (export *Export) GetValue(field *FieldMap, data map[string]interface{}) (va
 }
 
 //Write2streamWriter 向写入流中写入数据
-func (export *Export) Write2streamWriter(streamWriter *excelize.StreamWriter, rowNumber int, fieldMap map[int]*FieldMap, data []map[string]interface{}) (nextRowNumber int, err error) {
+func (export *_json2excel) Write2streamWriter(streamWriter *excelize.StreamWriter, rowNumber int, fieldMap map[int]*FieldMap, data []map[string]interface{}) (nextRowNumber int, err error) {
 	minColIndex := 999999999 // 默认从最右边写入
 	// 找到每行开始写入的列序号
 	for colIndex := range fieldMap {
@@ -233,7 +238,7 @@ func (export *Export) Write2streamWriter(streamWriter *excelize.StreamWriter, ro
 }
 
 //GetStreamWriter 打开文件流，将已有的数据填写到流内，返回写入流
-func (export *Export) GetStreamWriter(fd *excelize.File, sheet string) (streamWriter *excelize.StreamWriter, err error) {
+func (export *_json2excel) GetStreamWriter(fd *excelize.File, sheet string) (streamWriter *excelize.StreamWriter, err error) {
 	streamWriter, err = fd.NewStreamWriter(sheet)
 	if err != nil {
 		return
@@ -294,7 +299,7 @@ func (l *LogInfoReadChanData) Error() (err error) {
 }
 
 //ReadChanData 接收chan中的数据,写入文件,完成后输出完成信号，并退出
-func (export *Export) ReadChanData(dataChan chan *DataWrap, fd *excelize.File, sheet string, fieldMap map[int]*FieldMap) (finishSignal chan struct{}, err error) {
+func (export *_json2excel) ReadChanData(dataChan chan *DataWrap, fd *excelize.File, sheet string, fieldMap map[int]*FieldMap) (finishSignal chan struct{}, err error) {
 	streamWriter, err := export.GetStreamWriter(fd, sheet)
 	if err != nil {
 		return nil, err

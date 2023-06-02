@@ -1,4 +1,4 @@
-module github.com/suifengpiao14/excelimportexport
+module github.com/suifengpiao14/exceljson
 
 go 1.18
 

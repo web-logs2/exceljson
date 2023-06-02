@@ -1,19 +1,19 @@
-package excelimportexport
+package exceljson
 
 import (
 	"github.com/xuri/excelize/v2"
 )
 
-type parse struct {
+type _excel2json struct {
 }
 
-// NewParseService 实例化 excel服务
-func NewParseService() *parse {
-	return &parse{}
+// NewExcel2json 实例化 excel服务
+func NewExcel2json() *_excel2json {
+	return &_excel2json{}
 }
 
 // Read 读取excel 表中所有数据
-func (instance *parse) Read(f *excelize.File, sheet string, fieldMap map[string]string, rowIndex int, isUnmergeCell bool) ([]map[string]string, error) {
+func (instance *_excel2json) Read(f *excelize.File, sheet string, fieldMap map[string]string, rowIndex int, isUnmergeCell bool) ([]map[string]string, error) {
 	if isUnmergeCell {
 		err := instance.UnmergeCell(f, sheet)
 		if err != nil {
@@ -52,7 +52,7 @@ func (instance *parse) Read(f *excelize.File, sheet string, fieldMap map[string]
 }
 
 //UnmergeCell 将合并单元格展开，值填充到每个展开的单元内
-func (instance *parse) UnmergeCell(f *excelize.File, sheet string) (err error) {
+func (instance *_excel2json) UnmergeCell(f *excelize.File, sheet string) (err error) {
 	mergeCells, err := f.GetMergeCells(sheet)
 	if err != nil {
 		return err
