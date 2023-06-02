@@ -1,8 +1,20 @@
 package exceljson
 
 import (
+	"io"
+	"strings"
+
 	"github.com/xuri/excelize/v2"
 )
+
+//OpenReader 打开excel 文件
+func OpenReader(r io.Reader) (f *excelize.File, err error) {
+	f, err = excelize.OpenReader(r)
+	if err != nil {
+		return nil, err
+	}
+	return f, err
+}
 
 type _excel2json struct {
 }
@@ -26,6 +38,9 @@ func (instance *_excel2json) Read(f *excelize.File, sheet string, fieldMap map[s
 		return nil, err
 	}
 	output := make([]map[string]string, 0)
+	for k, v := range fieldMap {
+		fieldMap[strings.ToUpper(k)] = v // 兼容 大小写
+	}
 
 	for index, row := range rows {
 		if index < rowIndex-1 { // 从指定行开始读取
